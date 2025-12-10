@@ -19,28 +19,34 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnBands = document.getElementById("load-bands");
     const bandsList = document.getElementById("band-list");
 
-    // Datos mock (simulan la respuesta de MusicBrainz)
-    const mockData = {
-        artists: [
-            { name: "Queen", disambiguation: "British rock band" },
-            { name: "Queen + Adam Lambert", disambiguation: "Live project" },
-            { name: "Queen Latifah", disambiguation: "Rapper/singer" },
-            { name: "Queenadreena", disambiguation: "Alternative rock band" },
-            { name: "Queenadreena Tribute", disambiguation: "Tribute band" },
-        ]
-    };
-
     btnBands.addEventListener("click", () => {
         bandsList.innerHTML = "<li class='collection-item'>Loading...</li>";
 
-        setTimeout(() => { // simula la latencia de la API
-            bandsList.innerHTML = "";
-            mockData.artists.forEach(artist => {
-                const li = document.createElement("li");
-                li.classList.add("collection-item");
-                li.innerHTML = `<strong>${artist.name}</strong> (${artist.disambiguation || 'Unknown'})`;
-                bandsList.appendChild(li);
+        // Llamada a la API oficial SpaceFlight News
+        fetch("https://api.spaceflightnewsapi.net/v4/articles/")
+            .then(response => response.json())
+            .then(data => {
+                bandsList.innerHTML = "";
+
+                // La API devuelve results[]
+                data.results.forEach(article => {
+                    const li = document.createElement("li");
+                    li.classList.add("collection-item");
+
+                    li.innerHTML = `
+                        <strong>${article.title}</strong><br>
+                        <em>${article.news_site}</em><br>
+                        <small>${new Date(article.published_at).toLocaleDateString()}</small><br><br>
+                    `;
+
+                    bandsList.appendChild(li);
+                });
+            })
+            .catch(err => {
+                bandsList.innerHTML = `
+                    <li class='collection-item red-text'>
+                        Error loading data: ${err}
+                    </li>`;
             });
-        }, 500);
     });
 });
