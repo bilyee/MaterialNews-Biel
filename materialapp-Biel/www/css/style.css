@@ -1,0 +1,26 @@
+/* Espaciado entre tarjetas */
+.card {
+    margin: 15px 0;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* Texto dentro de la tarjeta */
+.card .card-content p {
+    font-size: 0.9rem;
+    color: white;
+}
+
+/* Imagen dentro de la tarjeta */
+.card .card-image img {
+    height: 180px;
+    object-fit: cover;
+}
+
+/* Botón cargar noticias centrado */
+#load-bands {
+    margin-bottom: 20px;
+}

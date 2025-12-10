@@ -20,33 +20,43 @@ document.addEventListener('DOMContentLoaded', function () {
     const bandsList = document.getElementById("band-list");
 
     btnBands.addEventListener("click", () => {
-        bandsList.innerHTML = "<li class='collection-item'>Loading...</li>";
+        bandsList.innerHTML = "<p>Cargando noticias...</p>";
 
-        // Llamada a la API oficial SpaceFlight News
         fetch("https://api.spaceflightnewsapi.net/v4/articles/")
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 bandsList.innerHTML = "";
+                const row = document.createElement("div");
+                row.classList.add("row");
 
-                // La API devuelve results[]
                 data.results.forEach(article => {
-                    const li = document.createElement("li");
-                    li.classList.add("collection-item");
+                    const col = document.createElement("div");
+                    col.className = "col s12 m6 l4";
 
-                    li.innerHTML = `
-                        <strong>${article.title}</strong><br>
-                        <em>${article.news_site}</em><br>
-                        <small>${new Date(article.published_at).toLocaleDateString()}</small><br><br>
+                    const card = document.createElement("div");
+                    card.className = "card hoverable";
+
+                    const cardImage = document.createElement("div");
+                    cardImage.className = "card-image";
+                    cardImage.innerHTML = `<img src="${article.image_url || 'images/placeholder.jpg'}">`;
+
+                    const cardContent = document.createElement("div");
+                    cardContent.className = "card-content";
+                    cardContent.innerHTML = `
+                        <span class="card-title">${article.title}</span>
+                        <p>${new Date(article.published_at).toLocaleDateString()} - ${article.news_site}</p>
                     `;
 
-                    bandsList.appendChild(li);
+                    card.appendChild(cardImage);
+                    card.appendChild(cardContent);
+                    col.appendChild(card);
+                    row.appendChild(col);
                 });
+
+                bandsList.appendChild(row);
             })
             .catch(err => {
-                bandsList.innerHTML = `
-                    <li class='collection-item red-text'>
-                        Error loading data: ${err}
-                    </li>`;
+                bandsList.innerHTML = `<p class="red-text">Error cargando noticias: ${err}</p>`;
             });
     });
 });
